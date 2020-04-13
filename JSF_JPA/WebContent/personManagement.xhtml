@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+<h:body>
+	<ui:composition template="templates/template.xhtml">
+		<ui:define name="content">
+			<h:form id="personForm">
+				<p:growl id="messages" showDetail="true" />
+				<p:dataTable id="personTable" var="person" value="#{personBean.allPersons}" reflow="true" selectionMode="single" rowKey="#{person.id}">
+					<f:facet name="header">
+						<h:outputText value="Személyek" />
+					</f:facet>
+
+					<p:ajax event="rowSelect" listener="#{personBean.onRowSelect}" update=":modifyForm" />
+
+					<p:column headerText="id" rendered="false">
+						<h:outputText value="#{person.id}" />
+					</p:column>
+
+
+					<p:column headerText="Vezetéknév">
+						<h:outputText value="#{person.lastName}" />
+					</p:column>
+
+					<p:column headerText="Keresztnév">
+						<h:outputText value="#{person.firstName}" />
+					</p:column>
+
+					<p:column headerText="Születési idő">
+						<h:outputText value="#{person.birthDay}">
+							<f:convertDateTime type="date" pattern="yyy-MM-dd" timeZone="Europe/Budapest" />
+						</h:outputText>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+			<p />
+			<h:form id="modifyForm">
+				<p:panel header="Módosítás" layout="grid" columnClasses="ui-g-12">
+					<p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-1,ui-grid-col-1,ui-grid-col-10" styleClass="ui-noborder">
+						<p:outputLabel value="Vezetéknév" />
+						<p:inputText id="lastName" value="#{personBean.person.lastName}" />
+
+						<p:outputLabel value="Keresztnév" />
+						<p:inputText id="firstName" value="#{personBean.person.firstName}" />
+
+						<p:outputLabel value="Születési idő" />
+						<p:calendar value="#{personBean.person.birthDay}" locale="hu" timeZone="Europe/Budapest" navigator="true" pattern="yyyy-MM-dd" />
+						<p:messages autoUpdate="true" />
+					</p:panelGrid>
+					<p:panelGrid columns="1" styleClass="ui-noborder">
+						<p:commandButton value="Új személy létrehozása" update=":personForm:personTable @this" actionListener="#{personBean.newPerson}" />
+						<p:commandButton value="Módosítás" update=":personForm:personTable" actionListener="#{personBean.modifyPerson}" />
+					</p:panelGrid>
+				</p:panel>
+			</h:form>
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
